@@ -6,10 +6,6 @@
 ///////////////////////////////
 document.getElementById('signin').addEventListener("click", signin, false);
 document.getElementById('processSignin').addEventListener("click", processSigninResponse, false);
-document.getElementById('signinDifferentCallback').addEventListener("click", signinDifferentCallback, false);
-document.getElementById('signout').addEventListener("click", signout, false);
-document.getElementById('processSignout').addEventListener("click", processSignoutResponse, false);
-document.getElementById('links').addEventListener('change', toggleLinks, false);
 
 ///////////////////////////////
 // OidcClient config
@@ -40,9 +36,7 @@ var client = new Oidc.OidcClient(settings);
 function signin() {
     client.createSigninRequest({ state: { bar: 15 } }).then(function(req) {
         log("signin request", req, "<a href='" + req.url + "'>go signin</a>");
-        if (followLinks()) {
-            window.location = req.url;
-        }
+        window.location = req.url;
     }).catch(function(err) {
         log(err);
     });
@@ -58,60 +52,9 @@ function processSigninResponse() {
     });
 }
 
-function signinDifferentCallback(){
-    client.createSigninRequest({ state: { bar: 15 }, redirect_uri: 'http://localhost:15000/oidc-client-sample-callback.html' }).then(function(req) {
-        log("signin request", req, "<a href='" + req.url + "'>go signin</a>");
-        if (followLinks()) {
-            window.location = req.url;
-        }
-    }).catch(function(err) {
-        log(err);
-    });
+if (window.location.href.indexOf("#") >= 0) {
+    processSigninResponse();
 }
-
-function signout() {
-    client.createSignoutRequest({ id_token_hint: signinResponse && signinResponse.id_token, state: { foo: 5 } }).then(function(req) {
-        log("signout request", req, "<a href='" + req.url + "'>go signout</a>");
-        if (followLinks()) {
-            window.location = req.url;
-        }
-    });
-}
-
-function processSignoutResponse() {
-    client.processSignoutResponse().then(function(response) {
-        signinResponse = null;
-        log("signout response", response);
-    }).catch(function(err) {
-        log(err);
-    });
-}
-
-function toggleLinks() {
-    var val = document.getElementById('links').checked;
-    localStorage.setItem("follow", val);
-
-    var display = val ? 'none' : '';
-
-    document.getElementById('processSignin').style.display = display;
-    document.getElementById('processSignout').style.display = display;
-}
-
-function followLinks() {
-    return localStorage.getItem("follow") === "true";
-}
-
-var follow = followLinks();
-var display = follow ? 'none' : '';
-document.getElementById('links').checked = follow;
-document.getElementById('processSignin').style.display = display;
-document.getElementById('processSignout').style.display = display;
-
-if (followLinks()) {
-    if (window.location.href.indexOf("#") >= 0) {
-        processSigninResponse();
-    }
-    else if (window.location.href.indexOf("?") >= 0) {
-        processSignoutResponse();
-    }
+else if (window.location.href.indexOf("?") >= 0) {
+    processSignoutResponse();
 }
