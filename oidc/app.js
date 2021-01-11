@@ -75,7 +75,7 @@
     );
 
     var host =
-      signInEl.dataset.host || 'https://ca.portal.gs/';
+      signInEl.dataset.host || 'https://health-canada-test.grnspace.co/';
     if (host[host.length - 1] !== '/') host += '/';
     fetch(host + 'oauth2/token', {
       method: 'POST',
