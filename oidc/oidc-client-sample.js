@@ -19,7 +19,7 @@ var staging = 'https://health-canada-test.grnspace.co/oauth2';
 var prod = 'https://ca.portal.gs/oauth2';
 
 var settings = {
-  authority: 'https://health-canada-test.grnspace.co/oauth2',
+  authority: 'https://ca.portal.gs/oauth2',
   client_id: 'health-canada-demo-resource-pkce',
   redirect_uri: 'https://grnspace.github.io/wtc-oidc-client/oidc/',
   post_logout_redirect_uri: 'https://grnspace.github.io/wtc-oidc-client/oidc/',
