@@ -16,7 +16,7 @@ Oidc.Log.logger = console;
 Oidc.Log.level = Oidc.Log.INFO;
 
 var staging = 'https://app.wellnesstogether.grnspace.ca/oauth2';
-var prod = 'https://ca.portal.gs/oauth2';
+var prod = 'https://app.wellnesstogether.ca/oauth2/jwks';
 
 var settings = {
   authority: 'https://app.wellnesstogether.grnspace.ca/oauth2',
