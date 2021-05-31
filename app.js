@@ -75,7 +75,7 @@
     );
 
     var host =
-      signInEl.dataset.host || 'https://app.wellnesstogether.grnspace.co/';
+      signInEl.dataset.host || 'https://app.wellnesstogether.grnspace.ca/';
     if (host[host.length - 1] !== '/') host += '/';
     fetch(host + 'oauth2/token', {
       method: 'POST',
