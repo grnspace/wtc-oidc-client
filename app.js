@@ -1,9 +1,14 @@
+import {
+  createRemoteJWKSet,
+  jwtVerify,
+} from 'https://cdnjs.cloudflare.com/ajax/libs/jose/4.14.4/index.bundle.min.js';
+
 (function () {
   async function validateSignature(token) {
-    const JWKS = jose.createRemoteJWKSet(
+    const JWKS = createRemoteJWKSet(
       new URL('https://app.wellnesstogether.grnspace.ca/oauth2/jwks/')
     );
-    const { payload } = await jose.jwtVerify(token, JWKS);
+    const { payload } = await jwtVerify(token, JWKS);
     return payload;
   }
 
