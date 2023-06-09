@@ -1,57 +1,17 @@
+import {
+  createRemoteJWKSet,
+  jwtVerify,
+} from 'https://cdnjs.cloudflare.com/ajax/libs/jose/4.14.4/index.bundle.min.js';
+
 (function () {
-  function b64DecodeUnicode(str) {
-    return decodeURIComponent(
-      atob(str).replace(/(.)/g, function (m, p) {
-        var code = p.charCodeAt(0).toString(16).toUpperCase();
-        if (code.length < 2) {
-          code = '0' + code;
-        }
-        return '%' + code;
-      })
+  async function validateSignature(token) {
+    const JWKS = createRemoteJWKSet(
+      new URL('https://app.wellnesstogether.grnspace.ca/oauth2/jwks/')
     );
-  }
+    const { payload, protectedHeader } = await jwtVerify(token, JWKS);
+    console.log('Signature verified with key: ' + protectedHeader.kid);
 
-  function base64UrlDecode(str) {
-    var output = str.replace(/-/g, '+').replace(/_/g, '/');
-    switch (output.length % 4) {
-      case 0:
-        break;
-      case 2:
-        output += '==';
-        break;
-      case 3:
-        output += '=';
-        break;
-      default:
-        throw 'Illegal base64url string!';
-    }
-
-    try {
-      return b64DecodeUnicode(output);
-    } catch (err) {
-      return atob(output);
-    }
-  }
-
-  function InvalidTokenError(message) {
-    this.message = message;
-  }
-
-  InvalidTokenError.prototype = new Error();
-  InvalidTokenError.prototype.name = 'InvalidTokenError';
-
-  function jwtDecode(token, options) {
-    if (typeof token !== 'string') {
-      throw new InvalidTokenError('Invalid token specified');
-    }
-
-    options = options || {};
-    var pos = options.header === true ? 0 : 1;
-    try {
-      return JSON.parse(base64UrlDecode(token.split('.')[pos]));
-    } catch (e) {
-      throw new InvalidTokenError('Invalid token specified: ' + e.message);
-    }
+    return payload;
   }
 
   var params = new Map(
@@ -82,10 +42,10 @@
       body: formData,
     })
       .then((res) => res.json())
-      .then((data) => jwtDecode(data.id_token))
-      .then((idToken) => {
+      .then((data) => validateSignature(data.id_token))
+      .then((claims) => {
         var resultEl = document.getElementById('id-token-result');
-        resultEl.textContent = JSON.stringify(idToken, null, 2);
+        resultEl.textContent = JSON.stringify(claims, null, 2);
         resultEl.style.display = '';
         hljs.highlightBlock(resultEl);
       })
