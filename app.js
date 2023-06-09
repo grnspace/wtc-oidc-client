@@ -1,6 +1,12 @@
-import { jwtDecode, validateSignature } from './lib';
-
 (function () {
+  async function validateSignature(token) {
+    const JWKS = jose.createRemoteJWKSet(
+      new URL('https://app.wellnesstogether.grnspace.ca/oauth2/jwks/')
+    );
+    const { payload } = await jose.jwtVerify(token, JWKS);
+    return payload;
+  }
+
   var params = new Map(
     window.location.search
       .slice(1)
@@ -30,7 +36,6 @@ import { jwtDecode, validateSignature } from './lib';
     })
       .then((res) => res.json())
       .then((data) => validateSignature(data.id_token))
-      .then((idToken) => jwtDecode(idToken))
       .then((claims) => {
         var resultEl = document.getElementById('id-token-result');
         resultEl.textContent = JSON.stringify(claims, null, 2);
