@@ -8,7 +8,9 @@ import {
     const JWKS = createRemoteJWKSet(
       new URL('https://app.wellnesstogether.grnspace.ca/oauth2/jwks/')
     );
-    const { payload } = await jwtVerify(token, JWKS);
+    const { payload, protectedHeader } = await jwtVerify(token, JWKS);
+    console.log('Signature verified with key: ' + protectedHeader.kid);
+
     return payload;
   }
 
