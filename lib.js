@@ -54,6 +54,5 @@ export function jwtDecode(token, options) {
 }
 
 export function validateSignature(token) {
-  validator = new Oidc.ResponseValidator();
   return token;
 }
